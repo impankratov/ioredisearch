@@ -39,11 +39,11 @@ enum ClientArgs {
   Fields = 'FIELDS'
 }
 
-export class Client {
+export class Client<C extends Redis> {
   private indexName: string;
-  private redis: Redis;
+  private redis: C;
 
-  constructor(indexName: string, conn: Redis) {
+  constructor(indexName: string, conn: C) {
     this.indexName = indexName;
     this.redis = conn;
   }
