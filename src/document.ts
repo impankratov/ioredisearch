@@ -1,8 +1,8 @@
 import { SchemaDictionary } from './client';
 import * as R from 'ramda';
 
-export class Document<T = SchemaDictionary> {
-  public id: string | number;
+export class Document {
+  public id: string;
   public payload: Object;
 
   constructor(id: string, fields: Object, payload: Object | null = null) {

@@ -101,10 +101,10 @@ export class Client {
    * @param snippetSizes A dictionary of {field: snippet_size}
    * used to trim and format the result. e.g. {'body': 500}
    */
-  public search<T extends NumericDictionary>(
+  public search<T = SchemaDictionary, S = NumericDictionary>(
     queryOrString: Query | string,
-    snippetSizes?: T
-  ): Promise<Result<T>> {
+    snippetSizes?: S
+  ): Promise<Result<T, S>> {
     const query = this.toQuery(queryOrString);
 
     // Set time

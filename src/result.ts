@@ -1,16 +1,16 @@
 import * as R from 'ramda';
 
 import { Document } from './document';
-import { NumericDictionary } from './client';
+import { NumericDictionary, SchemaDictionary } from './client';
 
 /**
  * Represents the result of a search query,
  * and has an array of Document objects
  */
-export class Result<S = NumericDictionary> {
+export class Result<T = SchemaDictionary, S = NumericDictionary> {
   public total: number;
   public duration: number;
-  public docs: any[] = [];
+  public docs: (Document & T)[] = [];
   /**
    * @param snippets An optional dictionary of the form {field: snippet_size} for snippet formatting
    */
@@ -63,7 +63,7 @@ export class Result<S = NumericDictionary> {
           R.mapObjIndexed((v, k) => doc.snippetize(k, v, tokens), snippets);
         }
 
-        this.docs.push(doc);
+        this.docs.push(doc as any);
       })
     )(res);
   }
