@@ -1,4 +1,7 @@
+sudo: required
 language: node_js
+services:
+  - docker
 branches:
   only:
     - master
@@ -11,9 +14,13 @@ notifications:
   email: false
 node_js:
   - node
+before_install:
+  - docker-compose up -d
+  - docker ps -a
 script:
   - npm run test:prod && npm run build
 after_success:
+  - docker-compose stop
   - npm run report-coverage
   - npm run deploy-docs
   - npm run semantic-release
