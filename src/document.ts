@@ -1,6 +1,9 @@
 import { SchemaDictionary } from './client';
 import * as R from 'ramda';
 
+/**
+ * Represents a single document in a result set
+ */
 export class Document {
   public id: string;
   public payload: Object;

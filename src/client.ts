@@ -18,7 +18,18 @@ export interface NumericDictionary {
 export type SearchDictionary = NumericDictionary;
 export type SnippetsDictionary = NumericDictionary;
 
-export type DocumentScore = 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0;
+export type DocumentScore =
+  | 0.0
+  | 0.1
+  | 0.2
+  | 0.3
+  | 0.4
+  | 0.5
+  | 0.6
+  | 0.7
+  | 0.8
+  | 0.9
+  | 1.0;
 
 enum Commands {
   Create = 'FT.CREATE',
@@ -187,7 +198,7 @@ export class Client<C extends Redis> {
     }
 
     if (R.not(R.is(Query, query))) {
-      throw new Error(`Bad query type ${typeof query}`);
+      throw new Error(`Bad query type: '${typeof query}'`);
     }
 
     return query;

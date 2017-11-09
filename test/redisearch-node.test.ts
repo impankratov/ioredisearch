@@ -15,7 +15,7 @@ interface TestSchema {
 }
 
 describe('Client', () => {
-  let client: Client;
+  let client: Client<Redis>;
   beforeEach(() => {
     client = new Client('test', redis);
   });
@@ -48,53 +48,109 @@ describe('Client', () => {
       });
   });
 
-  it('should add a document', () => {
-    const docId = faker.random.alphaNumeric(6);
-    const docBody = {
-      title: faker.random.words(3),
-      comments: faker.random.number()
-    };
+  describe('addDocument', () => {
+    it('should add a document', () => {
+      const docId = faker.random.alphaNumeric(6);
+      const docBody = {
+        title: faker.random.words(3),
+        comments: faker.random.number()
+      };
 
-    return client
-      .createIndex([titleField, commentsField])
-      .then(() => client.addDocument<TestSchema>(docId, docBody))
-      .then(res => {
-        expect(res).toBe('OK');
-      });
-  });
-
-  it('should perform a search', () => {
-    const docId = () => faker.random.alphaNumeric(6);
-    const docBody = () => ({
-      title: faker.random.words(3),
-      comments: faker.random.number()
+      return client
+        .createIndex([titleField, commentsField])
+        .then(() => client.addDocument<TestSchema>(docId, docBody))
+        .then(res => {
+          expect(res).toBe('OK');
+        });
     });
 
-    const requested = {
-      id: docId(),
-      title: 'testing client search',
-      comments: faker.random.number()
-    };
+    it(`should add a document with 'noSave' argument`, () => {
+      const docId = faker.random.alphaNumeric(6);
+      const docBody = {
+        title: faker.random.words(3),
+        comments: faker.random.number()
+      };
 
-    return client
-      .createIndex([titleField, commentsField])
-      .then(() => client.addDocument<TestSchema>(docId(), docBody()))
-      .then(() => client.addDocument<TestSchema>(docId(), docBody()))
-      .then(() => client.addDocument<TestSchema>(docId(), docBody()))
-      .then(() =>
-        client.addDocument<TestSchema>(requested.id, {
-          title: requested.title,
-          comments: requested.comments
-        })
-      )
-      .then(() => client.search('client search'))
-      .then(res => {
-        expect(res.total).toBeGreaterThanOrEqual(1);
-        expect(res.docs).toContainEqual({
-          ...requested,
-          payload: {},
-          comments: requested.comments.toString()
+      return client
+        .createIndex([titleField, commentsField])
+        .then(() =>
+          client.addDocument<TestSchema>(docId, docBody, 0.0, {}, true)
+        )
+        .then(res => {
+          expect(res).toBe('OK');
         });
+    });
+
+    it(`should add a document with 'replace' & 'partial' arguments`, () => {
+      const docId = faker.random.alphaNumeric(6);
+      const docBody = {
+        title: faker.random.words(3),
+        comments: faker.random.number()
+      };
+
+      return client
+        .createIndex([titleField, commentsField])
+        .then(() =>
+          client.addDocument<TestSchema>(
+            docId,
+            docBody,
+            0.0,
+            {},
+            false,
+            true,
+            true
+          )
+        )
+        .then(res => {
+          expect(res).toBe('OK');
+        });
+    });
+  });
+
+  describe('search', () => {
+    it('should throw if other than string or Query type is provided', () => {
+      return client
+        .createIndex([titleField, commentsField])
+        .then(() => client.search(666 as any))
+        .catch(e => {
+          expect(e).toBeInstanceOf(Error);
+          expect(e.message).toEqual(`Bad query type: 'number'`);
+        });
+    });
+
+    it('should perform a search', () => {
+      const docId = () => faker.random.alphaNumeric(6);
+      const docBody = () => ({
+        title: faker.random.words(3),
+        comments: faker.random.number()
       });
+
+      const requested = {
+        id: docId(),
+        title: 'testing client search',
+        comments: faker.random.number()
+      };
+
+      return client
+        .createIndex([titleField, commentsField])
+        .then(() => client.addDocument<TestSchema>(docId(), docBody()))
+        .then(() => client.addDocument<TestSchema>(docId(), docBody()))
+        .then(() => client.addDocument<TestSchema>(docId(), docBody()))
+        .then(() =>
+          client.addDocument<TestSchema>(requested.id, {
+            title: requested.title,
+            comments: requested.comments
+          })
+        )
+        .then(() => client.search('client search'))
+        .then(res => {
+          expect(res.total).toBeGreaterThanOrEqual(1);
+          expect(res.docs).toContainEqual({
+            ...requested,
+            payload: {},
+            comments: requested.comments.toString()
+          });
+        });
+    });
   });
 });
