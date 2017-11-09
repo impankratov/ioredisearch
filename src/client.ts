@@ -18,6 +18,8 @@ export interface NumericDictionary {
 export type SearchDictionary = NumericDictionary;
 export type SnippetsDictionary = NumericDictionary;
 
+export type DocumentScore = 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0;
+
 enum Commands {
   Create = 'FT.CREATE',
   Search = 'FT.SEARCH',
@@ -39,6 +41,10 @@ enum ClientArgs {
   Fields = 'FIELDS'
 }
 
+/**
+ * A client for the RediSearch module.
+ * It abstracts the API of the module and lets you just use the engine
+ */
 export class Client<C extends Redis> {
   private indexName: string;
   private redis: C;
@@ -49,7 +55,8 @@ export class Client<C extends Redis> {
   }
 
   /**
-   * createIndex
+   * Create the search index. Creating an existing index juts updates its properties
+   * @param fields a list of TextField or NumericField objects
    */
   public createIndex(fields: Field[]): Promise<'OK'> {
     return this.redis.send_command(
@@ -61,19 +68,29 @@ export class Client<C extends Redis> {
   }
 
   /**
-   * dropIndex
+   * Drop the index if it exists
    */
   public dropIndex(): Promise<'OK'> {
     return this.redis.send_command(Commands.Drop, this.indexName);
   }
 
   /**
-   * addDocument
+   * Add a single document to the index.
+   * @param docId the id of the saved document.
+   * @param fields object of the document fields to be saved and/or indexed.
+   * NOTE: Geo points shoule be encoded as strings of "lon,lat"
+   * @param score the document ranking, between 0.0 and 1.0
+   * @param payload optional inner-index payload we can save for fast access in scoring functions
+   * @param noSave if set to true, we just index the document, and don't save a copy of it. This means that searches will just return ids.
+   * @param replace if true, and the document already is in the index, we perform an update and reindex the document
+   * @param partial if true, the fields specified will be added to the existing document.
+   * This has the added benefit that any fields specified with `no_index`
+   * will not be reindexed again. Implies `replace`
    */
   public addDocument<T extends SchemaDictionary>(
     docId: string,
     fields: T,
-    score = 1.0,
+    score: DocumentScore = 1.0,
     payload?: Object,
     noSave = false,
     replace = false,
@@ -132,7 +149,7 @@ export class Client<C extends Redis> {
     conn: Redis | null,
     docId: string,
     fields: T,
-    score = 1.0,
+    score: DocumentScore = 1.0,
     payload?: Object,
     noSave = false,
     replace = false,
