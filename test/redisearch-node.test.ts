@@ -3,11 +3,10 @@ import { Redis } from 'ioredis';
 
 import { NumericField, TextField } from '../src/field';
 import { Client } from '../src/client';
+import { docId, docBody, titleField, commentsField } from './mock-docs';
 
 const Redis = require('ioredis');
 const redis: Redis = new Redis();
-const titleField = new TextField('title', 5.0, true);
-const commentsField = new NumericField('comments');
 
 interface TestSchema {
   title: string;
@@ -15,7 +14,7 @@ interface TestSchema {
 }
 
 describe('Client', () => {
-  let client: Client<Redis>;
+  let client: Client;
   beforeEach(() => {
     client = new Client('test', redis);
   });
@@ -50,31 +49,19 @@ describe('Client', () => {
 
   describe('addDocument', () => {
     it('should add a document', () => {
-      const docId = faker.random.alphaNumeric(6);
-      const docBody = {
-        title: faker.random.words(3),
-        comments: faker.random.number()
-      };
-
       return client
         .createIndex([titleField, commentsField])
-        .then(() => client.addDocument<TestSchema>(docId, docBody))
+        .then(() => client.addDocument<TestSchema>(docId(), docBody()))
         .then(res => {
           expect(res).toBe('OK');
         });
     });
 
     it(`should add a document with 'noSave' argument`, () => {
-      const docId = faker.random.alphaNumeric(6);
-      const docBody = {
-        title: faker.random.words(3),
-        comments: faker.random.number()
-      };
-
       return client
         .createIndex([titleField, commentsField])
         .then(() =>
-          client.addDocument<TestSchema>(docId, docBody, 0.0, {}, true)
+          client.addDocument<TestSchema>(docId(), docBody(), 0.0, {}, true)
         )
         .then(res => {
           expect(res).toBe('OK');
@@ -82,18 +69,12 @@ describe('Client', () => {
     });
 
     it(`should add a document with 'replace' & 'partial' arguments`, () => {
-      const docId = faker.random.alphaNumeric(6);
-      const docBody = {
-        title: faker.random.words(3),
-        comments: faker.random.number()
-      };
-
       return client
         .createIndex([titleField, commentsField])
         .then(() =>
           client.addDocument<TestSchema>(
-            docId,
-            docBody,
+            docId(),
+            docBody(),
             0.0,
             {},
             false,
@@ -119,12 +100,6 @@ describe('Client', () => {
     });
 
     it('should perform a search', () => {
-      const docId = () => faker.random.alphaNumeric(6);
-      const docBody = () => ({
-        title: faker.random.words(3),
-        comments: faker.random.number()
-      });
-
       const requested = {
         id: docId(),
         title: 'testing client search',

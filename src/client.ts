@@ -7,6 +7,7 @@ import * as R from 'ramda';
 import { Field } from './field';
 import { Query } from './query';
 import { Result } from './result';
+import { BatchIndexer } from './batch-indexer';
 
 export interface SchemaDictionary {
   [key: string]: any;
@@ -56,9 +57,9 @@ enum ClientArgs {
  * A client for the RediSearch module.
  * It abstracts the API of the module and lets you just use the engine
  */
-export class Client<C extends Redis> {
+export class Client<C extends Redis = Redis> {
+  readonly redis: C;
   private indexName: string;
-  private redis: C;
 
   constructor(indexName: string, conn: C) {
     this.indexName = indexName;
@@ -89,7 +90,7 @@ export class Client<C extends Redis> {
    * Add a single document to the index.
    * @param docId the id of the saved document.
    * @param fields object of the document fields to be saved and/or indexed.
-   * NOTE: Geo points shoule be encoded as strings of "lon,lat"
+   * NOTE: Geo points should be encoded as strings of "lon,lat"
    * @param score the document ranking, between 0.0 and 1.0
    * @param payload optional inner-index payload we can save for fast access in scoring functions
    * @param noSave if set to true, we just index the document, and don't save a copy of it. This means that searches will just return ids.
@@ -156,7 +157,15 @@ export class Client<C extends Redis> {
       });
   }
 
-  private _addDocument<T extends SchemaDictionary>(
+  /**
+   * Create a new batch indexer from the client with a given chunk size
+   */
+  public batchIndexer(chunkSize = 1000): BatchIndexer {
+    return new BatchIndexer(this, chunkSize);
+  }
+
+  // private
+  _addDocument<T extends SchemaDictionary>(
     conn: Redis | null,
     docId: string,
     fields: T,
