@@ -166,8 +166,8 @@ export class Query {
       args.push('NOSTOPWORDS');
     }
 
-    args.concat(
-      R.pipe(
+    args.push(
+      ...R.pipe<Filter[], Filter[], any[][], any[]>(
         R.filter<Filter>(R.is(Filter)),
         R.pluck<Filter, 'args'>('args'),
         R.unnest
