@@ -1,24 +1,25 @@
 {
-  "name": "redisearch-node",
+  "name": "ioredisearch",
   "version": "0.0.0-development",
-  "description": "Node.js library for RediSearch Redis Module",
+  "description": "Client library for RediSearch Redis Module, designed to work in conjunction with ioredis",
   "keywords": [
     "redis",
     "typescript",
     "redisearch",
     "library",
-    "client"
+    "client",
+    "ioredis"
   ],
-  "main": "dist/redisearch-node.umd.js",
-  "module": "dist/redisearch-node.es5.js",
-  "typings": "dist/types/redisearch-node.d.ts",
+  "main": "dist/ioredisearch.umd.js",
+  "module": "dist/ioredisearch.es5.js",
+  "typings": "dist/types/ioredisearch.d.ts",
   "files": [
     "dist"
   ],
   "author": "Ivan Pankratov <im.pankratov@ya.ru>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/impankratov/redisearch-node.git"
+    "url": "https://github.com/impankratov/ioredisearch.git"
   },
   "license": "MIT",
   "engines": {

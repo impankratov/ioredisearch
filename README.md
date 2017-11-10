@@ -1,6 +1,6 @@
 # Redisearch Node
 
-Redisearch Node is a typescript search engine library that utilizes the RediSearch Redis Module API.
+Client library for [RediSearch](http://redisearch.io/) Redis Module, designed to work in conjunction with [ioredis](https://www.npmjs.com/package/ioredis).
 
 ### NPM scripts
 

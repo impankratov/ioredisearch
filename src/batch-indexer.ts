@@ -1,5 +1,5 @@
 import { Client } from './client';
-import { DocumentScore, SchemaDictionary } from './redisearch-node';
+import { DocumentScore, SchemaDictionary } from './ioredisearch';
 import { Pipeline, Redis } from 'ioredis';
 import * as R from 'ramda';
 

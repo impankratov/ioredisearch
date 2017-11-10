@@ -2,7 +2,7 @@ import { docId, docBody, titleField, commentsField } from './mock-docs';
 import { Redis as RedisInstance } from 'ioredis';
 
 import { BatchIndexer } from '../src/batch-indexer';
-import { Client } from '../src/redisearch-node';
+import { Client } from '../src/ioredisearch';
 
 const Redis = require('ioredis');
 const redis: RedisInstance = new Redis();

@@ -5,7 +5,7 @@ import camelCase from 'lodash.camelcase'
 
 const pkg = require('./package.json')
 
-const libraryName = 'redisearch-node'
+const libraryName = 'ioredisearch'
 
 export default {
   input: `compiled/${libraryName}.js`,
