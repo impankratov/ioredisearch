@@ -1,3 +1,8 @@
+[![license](https://img.shields.io/github/license/impankratov/ioredisearch.svg)](https://github.com/impankratov/ioredisearch/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/release/impankratov/ioredisearch.svg)](https://github.com/impankratov/ioredisearch/releases/latest)
+[![Build Status](https://travis-ci.org/travis-ci/travis-web.svg)](https://travis-ci.org/travis-ci/travis-web)
+[![npm version](https://badge.fury.io/js/ioredisearch.svg)](https://badge.fury.io/js/ioredisearch)
+
 # Redisearch Node
 
 Client library for [RediSearch](http://redisearch.io/) Redis Module, designed to work in conjunction with [ioredis](https://www.npmjs.com/package/ioredis).
