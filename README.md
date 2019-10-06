@@ -1,6 +1,6 @@
 [![license](https://img.shields.io/github/license/impankratov/ioredisearch.svg)](https://github.com/impankratov/ioredisearch/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/release/impankratov/ioredisearch.svg)](https://github.com/impankratov/ioredisearch/releases/latest)
-[![Build Status](https://travis-ci.org/travis-ci/travis-web.svg)](https://travis-ci.org/travis-ci/travis-web)
+[![Build Status](https://travis-ci.org/impankratov/ioredisearch.svg)](https://travis-ci.org/impankratov/ioredisearch)
 [![npm version](https://badge.fury.io/js/ioredisearch.svg)](https://badge.fury.io/js/ioredisearch)
 
 # Redisearch Node
